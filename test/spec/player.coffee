@@ -351,3 +351,18 @@ do (amo = @[".amo"], moduleName = "amo.module.game.player") ->
           ab.getChosen()
           expect(board.select.calls.count() - board.undo.calls.count()).toBe 0
 
+        describe "board の仕様", ->
+          dataProvider = -> [
+            ["board.current.turn", ((b)-> delete b.current.turn)]
+            ["board.current.value", ((b)-> delete b.current.value)]
+            ["board.current.getSelectableList", ((b)-> delete b.current.getSelectableList)]
+            ["board.select", ((b)-> delete b.select)]
+            ["board.isFinished", ((b)-> delete b.isFinished)]
+            ["board.undo", ((b)-> delete b.undo)]
+          ]
+          runBlock = (name, func) ->
+            it "#{name} は必須項目である", ->
+              func(board)
+              expect(-> ab.getChosen()).toThrow()
+
+          runWithDataProvider dataProvider, runBlock
