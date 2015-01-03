@@ -11,19 +11,17 @@ do (moduleName = "amo.module.game.player") ->
       changeStrategy: (newStrategy) ->
         strategy = newStrategy
         return
-      select: (x) ->
-        strategy.select? x
-        return
+      select: (x) -> strategy.select? x
       play: -> strategy.play()
 
   .factory "#{moduleName}.strategy.Man", ["$q", ($q) ->
     (board) ->
       deferred = null
       select: (x) ->
-        return unless deferred and board.select x
+        return false unless deferred and board.select x
         deferred.resolve board.isFinished()
         deferred = null
-        return
+        return true
       play: ->
         unless deferred
           deferred = $q.defer()

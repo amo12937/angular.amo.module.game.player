@@ -32,6 +32,12 @@ do (amo = @[".amo"], moduleName = "amo.module.game.player") ->
         player.select expected
         expect(strategy.select).toHaveBeenCalledWith expected
 
+      it "select は strategy.select の値をそのまま返す", ->
+        expected = {}
+        strategy.select = jasmine.createSpy("select").and.returnValue expected
+        actual = player.select()
+        expect(actual).toBe expected
+
       it "play は strategy.play を呼び出す", ->
         spyOn strategy, "play"
         player.play()
@@ -82,17 +88,30 @@ do (amo = @[".amo"], moduleName = "amo.module.game.player") ->
         man.select {}
         expect(board.select).not.toHaveBeenCalled()
 
+      it "play の前に select を呼び出すと false が返る", ->
+        expect(man.select {}).toBe false
+
       it "board.select が true を返した場合、board.isFinished が呼ばれる", ->
         board.select.and.returnValue true
         man.play()
         man.select {}
         expect(board.isFinished).toHaveBeenCalled()
 
+      it "board.select が true を返すと man.select も true を返す", ->
+        board.select.and.returnValue true
+        man.play()
+        expect(man.select {}).toBe true
+
       it "board.select が false を返した場合、board.isFinished は呼ばれない", ->
         board.select.and.returnValue false
         man.play()
         man.select {}
         expect(board.isFinished).not.toHaveBeenCalled()
+
+      it "board.select が false を返すと man.select も false を返す", ->
+        board.select.and.returnValue false
+        man.play()
+        expect(man.select {}).toBe false
 
       it "play は promise を返し、board.isFinished が返した値をそのまま返す", (done) ->
         expected = {}
