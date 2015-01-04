@@ -18,9 +18,7 @@
             strategy = newStrategy;
           },
           select: function(x) {
-            if (typeof strategy.select === "function") {
-              strategy.select(x);
-            }
+            return typeof strategy.select === "function" ? strategy.select(x) : void 0;
           },
           play: function() {
             return strategy.play();
@@ -35,10 +33,11 @@
           return {
             select: function(x) {
               if (!(deferred && board.select(x))) {
-                return;
+                return false;
               }
               deferred.resolve(board.isFinished());
               deferred = null;
+              return true;
             },
             play: function() {
               if (!deferred) {
@@ -68,7 +67,7 @@
                 var x;
                 x = self.getChosen();
                 if (x === void 0 || !board.select(x)) {
-                  throw new Error("getChosen must return the selectable obj on the board.");
+                  throw new Error("getChosen must return the selectable obj on the board.\nyour choie: " + x);
                 }
                 deferred.resolve(board.isFinished());
               }, delay);

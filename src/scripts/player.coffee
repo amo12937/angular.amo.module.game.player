@@ -43,7 +43,7 @@ do (moduleName = "amo.module.game.player") ->
             $timeout ->
               x = self.getChosen()
               if x is undefined or not board.select x
-                throw new Error "getChosen must return the selectable obj on the board."
+                throw new Error "getChosen must return the selectable obj on the board.\nyour choie: #{x}"
               deferred.resolve board.isFinished()
               return
             , delay
